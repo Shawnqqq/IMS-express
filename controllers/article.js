@@ -1,12 +1,16 @@
-const managerModels = require('./../models/managerModels')
+const articleModels = require('./../models/articleModels');
+const {formatTime} = require('../utils/formatDate');
 
-const managerController  = {
+const articleController = {
   show: async function(req,res,next){
     try{
-      let manager = await managerModels.all();
+      let article = await articleModels.whole();
+      article.forEach(data =>{
+        data.created_time = formatTime(data.created_time)
+      })
       res.json({
         code:200,
-        data:manager
+        data:article
       })
     }catch(err){
       console.log(err)
@@ -19,10 +23,10 @@ const managerController  = {
   single: async function(req,res,next){
     let id = req.params.id;
     try{
-      let manager = await managerModels.single(id);
+      let article = await articleModels.single(id);
       res.json({
         code:200,
-        data:manager
+        data:article
       })
     }catch(err){
       console.log(err)
@@ -33,10 +37,10 @@ const managerController  = {
     }
   },
   insert: async function(req,res,next){
-    let name = req.body.name;
-    let phone =req.body.phone;
-    let password =req.body.password;
-    if( !name || !phone || !password){
+    let title =req.body.title;
+    let sort_id = req.body.sort_id;
+    let text =req.body.text;
+    if( !title || !sort_id || !text){
       res.json({
         code:0,
         message:'缺少参数'
@@ -44,7 +48,7 @@ const managerController  = {
       return
     }
     try{
-      await managerModels.insert({name,phone,password})
+      await articleModels.insert({title,sort_id,text})
       res.json({
         code:200,
         message:'添加成功'
@@ -59,10 +63,10 @@ const managerController  = {
   },
   edit: async function(req,res,next){
     let id =req.params.id;
-    let name = req.body.name;
-    let phone =req.body.phone;
-    let password =req.body.password;
-    if( !name || !phone || !password){
+    let title =req.body.title;
+    let sort_id = req.body.sort_id;
+    let text =req.body.text;
+    if( !title || !sort_id || !text){
       res.json({
         code:0,
         message:'缺少参数'
@@ -70,7 +74,7 @@ const managerController  = {
       return
     }
     try{
-      await managerModels.update(id,{name,phone,password})
+      await articleModels.update(id,{title,sort_id,text})
       res.json({
         code:200,
         message:'修改成功'
@@ -85,9 +89,8 @@ const managerController  = {
   },
   delete:async function(req,res,next){
     let id =req.params.id;
-    let isdeleted = 1;
     try{
-      await managerModels.update(id,{isdeleted})
+      await articleModels.deleted(id)
       res.json({
         code:200,
         message:'删除成功'
@@ -102,4 +105,4 @@ const managerController  = {
   }
 }
 
-module.exports = managerController
+module.exports = articleController
