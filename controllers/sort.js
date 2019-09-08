@@ -4,16 +4,13 @@ const sortControllers = {
   show: async function(req,res,next){
     try{
       let sort = await sortModels.whole();
-      res.json({
-        code:200,
-        data:sort
-      })
+
+      res.locals.sort = sort;
+      res.locals.nav = 'sort';
+      res.render('manager/sort',res.locals)
     }catch(err){
-      console.log(err)
-      res.json({
-        code:0,
-        message:'出错了'
-      })
+      res.locals.error = err;
+      res.render('error',res.locals);
     }
   },
   insert: async function(req,res,next){
@@ -43,10 +40,10 @@ const sortControllers = {
     let id = req.params.id;
     try{
       let sort = await sortModels.single(id);
-      res.json({
-        code:200,
-        data:sort
-      })
+      
+      res.locals.sort = sort[0];
+      res.locals.nav = 'sort';
+      res.render('manager/sortEdit',res.locals)
     }catch(err){
       console.log(err)
       res.json({
@@ -93,6 +90,10 @@ const sortControllers = {
         message:'出错了'
       })
     }
+  },
+  create: async function(req,res,next){
+    res.locals.nav = 'sort';
+    res.render('manager/sortCreate');
   }
 }
 

@@ -4,26 +4,23 @@ const managerController  = {
   show: async function(req,res,next){
     try{
       let manager = await managerModels.all();
-      res.json({
-        code:200,
-        data:manager
-      })
+
+      res.locals.manager = manager;
+      res.locals.nav = 'staff';
+      res.render('manager/staff',res.locals)
+
     }catch(err){
-      console.log(err)
-      res.json({
-        code:0,
-        message:'出错了'
-      })
+      res.locals.error = err;
+      res.render('error',res.locals);
     }
   },
   single: async function(req,res,next){
     let id = req.params.id;
     try{
       let manager = await managerModels.single(id);
-      res.json({
-        code:200,
-        data:manager
-      })
+      res.locals.manager = manager[0];
+      res.locals.nav = 'staff';
+      res.render('manager/staffEdit',res.locals)
     }catch(err){
       console.log(err)
       res.json({
@@ -99,6 +96,10 @@ const managerController  = {
         message:'出错了'
       })
     }
+  },
+  create: async function(req,res,next){
+    res.locals.nav = 'staff';
+    res.render('manager/staffCreate');
   }
 }
 
