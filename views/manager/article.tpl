@@ -22,5 +22,11 @@
       </li>
     </ul>
     {% endfor %}
+    <div class="article-paging">
+      <a class="article-size">1</a>
+      <a class="article-size">1</a>
+      <a class="article-size">1</a>
+      <a class="article-size">1</a>
+    </div>
   </div>
 {% endblock %}

@@ -1,8 +1,7 @@
-{% extends './layout.tpl' %}
 
+<meta charset="UTF-8">
+<title>管理员登录</title>
 {% block css %}
-  <meta charset="UTF-8">
-  <title>管理员登录</title>
   <link rel="stylesheet" href="./stylesheets/login.css">
 {% endblock %}
 

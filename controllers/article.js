@@ -47,6 +47,24 @@ const articleController = {
       })
     }
   },
+  text:async function(req,res,next){
+    let id = req.params.id;
+    try{
+      let article = await articleModels
+        .single(id)
+      article.forEach(data =>{
+        data.created_time = formatTime(data.created_time)
+      })
+      res.locals.article = article[0];
+      res.render('index/singlePage',res.locals)
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:'出错了'
+      })
+    }
+  },
   insert: async function(req,res,next){
     let title =req.body.title;
     let sort_id = req.body.sort_id;

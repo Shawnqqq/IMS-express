@@ -1,4 +1,5 @@
 const sortModels = require('./../models/sortModels')
+const {formatTime} = require('../utils/formatDate');
 
 const sortControllers = {
   show: async function(req,res,next){
@@ -49,6 +50,25 @@ const sortControllers = {
       res.json({
         code:0,
         message:'出错了'
+      })
+    }
+  },
+  jump:async function(req,res,next){
+    let id =req.params.id;
+    try{
+      let sort = await sortModels
+        .where({'sort.id':id})
+        .leftJoin('article','sort.id','article.sort_id')
+        .column('article.id','article.title','article.created_time')
+        sort.forEach(data =>{
+          data.created_time = formatTime(data.created_time)
+        })
+      res.locals.sort = sort;
+      res.render('index/jumpPage',res.locals)
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
       })
     }
   },
