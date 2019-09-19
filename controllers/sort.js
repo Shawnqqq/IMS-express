@@ -14,6 +14,21 @@ const sortControllers = {
       res.render('error',res.locals);
     }
   },
+  showData: async function(req,res,next){
+    try{
+      let sort = await sortModels.whole();
+      res.json({
+        code:200,
+        data:sort
+      })
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:'出错了'
+      })
+    }
+  },
   insert: async function(req,res,next){
     let name = req.body.name;
     if( !name ){
@@ -53,6 +68,22 @@ const sortControllers = {
       })
     }
   },
+  singleData: async function(req,res,next){
+    let id = req.params.id;
+    try{
+      let sort = await sortModels.single(id);
+      res.json({
+        code:200,
+        data:sort
+      })
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:'出错了'
+      })
+    }
+  },
   jump:async function(req,res,next){
     let id =req.params.id;
     try{
@@ -65,6 +96,27 @@ const sortControllers = {
         })
       res.locals.sort = sort;
       res.render('index/jumpPage',res.locals)
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+      })
+    }
+  },
+  jumpData:async function(req,res,next){
+    let id =req.params.id;
+    try{
+      let sort = await sortModels
+        .where({'sort.id':id})
+        .leftJoin('article','sort.id','article.sort_id')
+        .column('article.id','article.title','article.created_time')
+        sort.forEach(data =>{
+          data.created_time = formatTime(data.created_time)
+        })
+      res.json({
+        code:200,
+        data:sort
+      })
     }catch(err){
       console.log(err)
       res.json({

@@ -21,6 +21,27 @@ const articleController = {
       res.render('error',res.locals);
     }
   },
+  showData: async function(req,res,next){
+    try{
+      let article = await articleModels
+      .whole()
+      .leftJoin('sort','article.sort_id','sort.id')
+      .column('article.id','article.title','sort.name','article.text','article.created_time')
+      article.forEach(data =>{
+        data.created_time = formatTime(data.created_time)
+      })
+      res.json({
+        code:200,
+        data:article
+      })
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:'出错了'
+      })
+    }
+  },
   single: async function(req,res,next){
     let id = req.params.id;
     try{
@@ -39,6 +60,34 @@ const articleController = {
       res.locals.sort = sort
       res.render('manager/articleEdit',res.locals)
 
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:'出错了'
+      })
+    }
+  },
+  singleData: async function(req,res,next){
+    let id = req.params.id;
+    try{
+      // 文章内容
+      let article = await articleModels
+        .single(id)
+      article.forEach(data =>{
+        data.created_time = formatTime(data.created_time)
+      })
+      // 分类选项
+      let sort = await sortModels
+        .whole()
+
+      res.json({
+        code:200,
+        data:{
+          article:article,
+          sort:sort
+        }
+      })
     }catch(err){
       console.log(err)
       res.json({

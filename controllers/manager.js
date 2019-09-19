@@ -4,14 +4,27 @@ const managerController  = {
   show: async function(req,res,next){
     try{
       let manager = await managerModels.all();
-
       res.locals.manager = manager;
       res.locals.nav = 'staff';
       res.render('manager/staff',res.locals)
-
     }catch(err){
       res.locals.error = err;
       res.render('error',res.locals);
+    }
+  },
+  showData: async function(req,res,next){
+    try{
+      let manager = await managerModels.all();
+      res.json({
+        code:200,
+        data:manager
+      })
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:"出错了"
+      })
     }
   },
   single: async function(req,res,next){
@@ -21,6 +34,22 @@ const managerController  = {
       res.locals.manager = manager[0];
       res.locals.nav = 'staff';
       res.render('manager/staffEdit',res.locals)
+    }catch(err){
+      console.log(err)
+      res.json({
+        code:0,
+        message:'出错了'
+      })
+    }
+  },
+  singleData: async function(req,res,next){
+    let id = req.params.id;
+    try{
+      let manager = await managerModels.single(id);
+      res.json({
+        code:200,
+        data:manager
+      })
     }catch(err){
       console.log(err)
       res.json({
